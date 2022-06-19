@@ -3,7 +3,7 @@
 #include <math.h>
 #include <stdbool.h>
 #include <omp.h>
-//#include <mpi.h>
+#include <mpi.h>
 
 #define FRACLEVELS 4 // Define here the number of levels the fractal tree will have
 
