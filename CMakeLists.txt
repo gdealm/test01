@@ -13,6 +13,7 @@ include_directories(${SimGrid_INCLUDE_DIR})
 
 find_package(MPI)
 set(DMPI_C_COMPILER "/usr/bin/smpicc")
+include_directories(MPI_INCLUDE_PATH)
 
 find_package(OpenMP)
 IF(OPENMP_FOUND)
