@@ -12,15 +12,8 @@ find_package(SimGrid 3.22 REQUIRED) # This template requires SimGrid v3.22
 include_directories(${SimGrid_INCLUDE_DIR})
 
 find_package(MPI)
-set(DMPI_C_COMPILER "/usr/bin/smpicc")
-set(DMPI_CXX_COMPILER "/usr/bin/smpicxx")
-set(DMPI_Fortran_COMPILER "/usr/bin/smpiff")
 
 find_package(OpenMP)
-IF(OPENMP_FOUND)
-  SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}")
-  SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
-ENDIF()
 
 add_executable(ping-pong ping-pong.cpp)
 target_link_libraries(ping-pong ${SimGrid_LIBRARY})
