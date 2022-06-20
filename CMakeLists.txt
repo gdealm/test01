@@ -23,5 +23,5 @@ target_link_libraries(ping-pong ${SimGrid_LIBRARY})
 add_executable(master-workers master-workers.cpp)
 target_link_libraries(master-workers ${SimGrid_LIBRARY})
 
-add_executable(roundtrip roundtrip.c)
-target_link_libraries(roundtrip ${SimGrid_LIBRARY})
+add_executable(myfractree myfractree.c)
+target_link_libraries(myfractree ${SimGrid_LIBRARY})
