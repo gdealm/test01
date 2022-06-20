@@ -12,7 +12,7 @@ find_package(SimGrid 3.22 REQUIRED) # This template requires SimGrid v3.22
 include_directories(${SimGrid_INCLUDE_DIR})
 
 find_package(MPI)
-
+include_directories(${MPI_INCLUDE_PATH})
 find_package(OpenMP)
 
 add_executable(ping-pong ping-pong.cpp)
