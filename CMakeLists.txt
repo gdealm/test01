@@ -15,7 +15,6 @@ find_package(MPI)
 set(DMPI_C_COMPILER "/usr/bin/smpicc")
 set(DMPI_CXX_COMPILER "/usr/bin/smpicxx")
 set(DMPI_Fortran_COMPILER "/usr/bin/smpiff")
-include_directories(SYSTEM ${MPI_INCLUDE_PATH})
 
 find_package(OpenMP)
 IF(OPENMP_FOUND)
