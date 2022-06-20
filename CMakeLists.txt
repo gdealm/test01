@@ -13,7 +13,9 @@ include_directories(${SimGrid_INCLUDE_DIR})
 
 find_package(MPI)
 set(DMPI_C_COMPILER "/usr/bin/smpicc")
-include_directories(MPI_INCLUDE_PATH)
+set(DMPI_CXX_COMPILER "/usr/bin/smpicxx")
+set(DMPI_Fortran_COMPILER "/usr/bin/smpiff")
+include_directories(SYSTEM ${MPI_INCLUDE_PATH})
 
 find_package(OpenMP)
 IF(OPENMP_FOUND)
@@ -28,4 +30,4 @@ add_executable(master-workers master-workers.cpp)
 target_link_libraries(master-workers ${SimGrid_LIBRARY})
 
 add_executable(roundtrip roundtrip.c)
-target_link_libraries(roundtrip ${SimGrid_LIBRARY})
+target_link_libraries(roundtrip ${SimGrid_LIBRARY} MPI_C)
