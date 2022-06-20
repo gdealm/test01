@@ -30,4 +30,4 @@ add_executable(master-workers master-workers.cpp)
 target_link_libraries(master-workers ${SimGrid_LIBRARY})
 
 add_executable(roundtrip roundtrip.c)
-target_link_libraries(roundtrip ${SimGrid_LIBRARY} MPI_C)
+target_link_libraries(roundtrip ${SimGrid_LIBRARY})
