@@ -13,6 +13,8 @@ include_directories(${SimGrid_INCLUDE_DIR})
 
 find_package(MPI)
 include_directories(${MPI_INCLUDE_PATH})
+include_directories(/usr/lib/x86_64-linux-gnu/openmpi)
+include_directories(/usr/lib/x86_64-linux-gnu)
 find_package(OpenMP)
 
 add_executable(ping-pong ping-pong.cpp)
