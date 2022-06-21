@@ -68,13 +68,13 @@ int main(int argc, char *argv[])
 				sendBuffer[0] = currFracLevel; // set current level 
 				sendBuffer[1] = fracElems[posOrigin][0]; // set parent element x position
 				sendBuffer[2] = fracElems[posOrigin][1]; // set parent element y position
-				printf("send %d(%d): %d = %d, %d, %d\n",((i%(mpisize-1))+1),(i+1),posOrigin,sendBuffer[0],sendBuffer[1],sendBuffer[2] );
+				printf("0 send %d(%d): %d = %d, %d, %d\n",((i%(mpisize-1))+1),(i+1),posOrigin,sendBuffer[0],sendBuffer[1],sendBuffer[2] );
 				MPI_Send(sendBuffer, 3, MPI_INT, ((i%(mpisize-1))+1), (i+1), MPI_COMM_WORLD); // send to next MPI machine in round robin
 			}
 			MPI_Recv(buffer, 2, MPI_INT, ((i%(mpisize-1))+1), (i+1), MPI_COMM_WORLD, MPI_STATUS_IGNORE); // receive calculated element position
 			fracElems[mpthreads - 1 + i][0] = buffer[0]; // update element x position in consolidated array
 			fracElems[mpthreads - 1 + i][1] = buffer[1]; // update element y position in consolidated array
-			printf("received %d(%d): %d, %d \n", ((i%(mpisize-1))+1), (i+1), buffer[0], buffer[1]);
+			printf("0 received %d(%d): %d = %d, %d \n", ((i%(mpisize-1))+1), (i+1), (mpthreads - 1 + i) , buffer[0], buffer[1]);
 		}
 		maxFracElems = mpthreads; // update max threads for next level control
 		currFracLevel++; // increment frac level to the next one
