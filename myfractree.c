@@ -68,7 +68,7 @@ int main(int argc, char *argv[])
 				sendBuffer[0] = currFracLevel; // set current level 
 				sendBuffer[1] = fracElems[posOrigin][0]; // set parent element x position
 				sendBuffer[2] = fracElems[posOrigin][1]; // set parent element y position
-				printf("send %d(%d): %d = %d, %d, %d\n",(i+1),((i%(mpisize-1))+1),posOrigin,sendBuffer[0],sendBuffer[1],sendBuffer[2] );
+				printf("send %d(%d): %d = %d, %d, %d\n",((i%(mpisize-1))+1),(i+1),posOrigin,sendBuffer[0],sendBuffer[1],sendBuffer[2] );
 				MPI_Send(sendBuffer, 3, MPI_INT, ((i%(mpisize-1))+1), (i+1), MPI_COMM_WORLD); // send to next MPI machine in round robin
 			}
 			MPI_Recv(buffer, 2, MPI_INT, ((i%(mpisize-1))+1), (i+1), MPI_COMM_WORLD, MPI_STATUS_IGNORE); // receive calculated element position
@@ -136,7 +136,7 @@ int main(int argc, char *argv[])
 			for(int i=0; i < mpthreads; i++)
 			{
 				//int mprank = omp_get_thread_num(); // OpenMP rank of this thread
-				printf("thread %d of %d to send 0 - %d\n", omp_get_thread_num(), mpirank, mpirank+(i*(mpisize-1)));
+				//printf("thread %d of %d to send 0 - %d\n", omp_get_thread_num(), mpirank, mpirank+(i*(mpisize-1)));
 				//check if new to receive or reuse from previous calculation in this while
 				if(i >= maxFracElems)
 				{
