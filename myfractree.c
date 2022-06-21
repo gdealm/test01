@@ -141,7 +141,7 @@ int main(int argc, char *argv[])
 				if(i >= maxFracElems)
 				{
 					int buffer[3]; // create a buffer to receive parent x,y positions
-					printf("to receive 0 - %d\n", mpirank+(i*(mpisize-1)));
+					printf("%d to receive from 0 - %d\n", mpirank , mpirank+(i*(mpisize-1)));
 					MPI_Recv(buffer, 3, MPI_INT, 0, mpirank+(i*(mpisize-1)), MPI_COMM_WORLD, MPI_STATUS_IGNORE); // receive parent x,y positions
 					localFracElems[i][0] = buffer[1] + displacementX;
 					localFracElems[i][1] = buffer[2] + 1;
