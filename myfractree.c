@@ -65,17 +65,16 @@ int main(int argc, char *argv[])
 				{
 					posOrigin = 0;
 				}
-				printf("send %d(%d): %d\n",(i+1),((i%(mpisize-1))+1),posOrigin);
 				sendBuffer[0] = currFracLevel; // set current level 
 				sendBuffer[1] = fracElems[posOrigin][0]; // set parent element x position
 				sendBuffer[2] = fracElems[posOrigin][1]; // set parent element y position
+				printf("send %d(%d): %d = %d, %d, %d\n",(i+1),((i%(mpisize-1))+1),posOrigin,sendBuffer[0],sendBuffer[1],sendBuffer[2] );
 				MPI_Send(sendBuffer, 3, MPI_INT, ((i%(mpisize-1))+1), (i+1), MPI_COMM_WORLD); // send to next MPI machine in round robin
 			}
-			printf("thread %d to receive %d - %d\n", omp_get_thread_num(), ((i%(mpisize-1))+1), (i+1));
 			MPI_Recv(buffer, 2, MPI_INT, ((i%(mpisize-1))+1), (i+1), MPI_COMM_WORLD, MPI_STATUS_IGNORE); // receive calculated element position
-			printf("received %d - %d\n", ((i%(mpisize-1))+1), (i+1));
 			fracElems[mpthreads - 1 + i][0] = buffer[0]; // update element x position in consolidated array
 			fracElems[mpthreads - 1 + i][1] = buffer[1]; // update element y position in consolidated array
+			printf("received %d(%d): %d, %d \n", ((i%(mpisize-1))+1), (i+1), buffer[0], buffer[1]);
 		}
 		maxFracElems = mpthreads; // update max threads for next level control
 		currFracLevel++; // increment frac level to the next one
@@ -90,19 +89,13 @@ int main(int argc, char *argv[])
 		sendBuffer[2] = 0; // just to initialize
 		
 		//send buffer to MPI machines not activated yet
-		printf("send finish total: %d\n",(mpisize-1)-maxFracElems); // Segmentation fault. below
+		//printf("send finish total: %d\n",(mpisize-1)-maxFracElems); // Segmentation fault. below
 		#pragma omp parallel for num_threads((mpisize-1)-maxFracElems)
 		//#pragma omp parallel for num_threads(7)
 		for(int i=maxFracElems; i < mpisize-1; i++)
 		{	
 			//printf("send finish %d\n",(i+1));
 			MPI_Send(sendBuffer, 3, MPI_INT, i+1, i+1, MPI_COMM_WORLD);
-			//#pragma omp critical
-			/*
-			{
-				MPI_Send(sendBuffer, 3, MPI_INT, i+1, i+1, MPI_COMM_WORLD);
-			}
-			*/
 		}
 		printf("all sent\n");	
 	}
@@ -114,9 +107,9 @@ int main(int argc, char *argv[])
 	}
   }  else { // not MPI member 0, calculate element(s) to send to 0
 	int buffer[3]; // create a buffer to receive parent element position
-	printf("receive %d\n",mpirank);
+	//printf("receive %d\n",mpirank);
        	MPI_Recv(buffer, 3, MPI_INT, 0, mpirank, MPI_COMM_WORLD, MPI_STATUS_IGNORE); // receive first message from MPI member 0
-	printf("received %d\n",mpirank);
+	//printf("received %d\n",mpirank);
 	currFracLevel = buffer[0]; // check in which level was first activated
 	
 	if(currFracLevel <= FRACLEVELS) // will do something if still in some level to process
@@ -176,7 +169,7 @@ int main(int argc, char *argv[])
 					localFracElems[i][1] += 1;
 					MPI_Send(localFracElems[i], 2, MPI_INT, 0, mpirank+(i*(mpisize-1)), MPI_COMM_WORLD);
 				}
-				printf("thread %d of %d sent (%d,%d)\n", omp_get_thread_num(), mpirank, localFracElems[i][0], localFracElems[i][1]);
+				//printf("thread %d of %d sent (%d,%d)\n", omp_get_thread_num(), mpirank, localFracElems[i][0], localFracElems[i][1]);
 			}
 			maxFracElems = mpthreads; // update max threads for next level control
 			currFracLevel++;
