@@ -130,7 +130,7 @@ int main(int argc, char *argv[])
 		maxFracElems = 1;
 		while(currFracLevel <= FRACLEVELS)
 		{
-			int displacementX = ((FRACLEVELS-currFracLevel+1))*2; // to add or subtract from parent x position to calculate the x position for this level elements
+			int displacementX = (FRACLEVELS-currFracLevel)*4; // to add or subtract from parent x position to calculate the x position for this level elements
 			fracLevelElems = mypow(2,currFracLevel-1); // calculate the number of elements in the current level of the fractal
 			int mpthreads = (fracLevelElems/(mpisize-1)); // contains the number of elements in the current level of the fractal this MPI will treat
 			if(mpirank < (fracLevelElems%(mpisize-1))+1) // may need to add one more if this MPI is treatment some of the remainder
