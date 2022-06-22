@@ -5,7 +5,7 @@
 #include <omp.h>
 #include <mpi.h>
 
-#define FRACLEVELS 4 // Define here the number of levels the fractal tree will have
+#define FRACLEVELS 2 // Define here the number of levels the fractal tree will have
 
 // defined local exp power function
 int mypow(int base, int exp)
@@ -70,14 +70,14 @@ int main(int argc, char *argv[])
 				sendBuffer[1] = fracElems[posOrigin][0]; // set parent element x position
 				sendBuffer[2] = fracElems[posOrigin][1]; // set parent element y position
 				sendBuffer[3] = ((i-maxFracElems)*2)+auxFirst; // relative index
-				printf("0 send %d(%d): %d = %d, %d, %d\n",((i%(mpisize-1))+1),(i+1),posOrigin,sendBuffer[0],sendBuffer[1],sendBuffer[2] );
+				printf("0 send %d(%d): %d = %d, %d, %d, %d\n",((i%(mpisize-1))+1),(i+1),posOrigin,sendBuffer[0],sendBuffer[1],sendBuffer[2],sendBuffer[3]);
 				MPI_Send(sendBuffer, 4, MPI_INT, ((i%(mpisize-1))+1), (i+1), MPI_COMM_WORLD); // send to next MPI machine in round robin
 			}
 			MPI_Recv(buffer, 3, MPI_INT, ((i%(mpisize-1))+1), (i+1), MPI_COMM_WORLD, MPI_STATUS_IGNORE); // receive calculated element position
+			printf("0 received %d(%d): %d = %d, %d \n", ((i%(mpisize-1))+1), (i+1), buffer[2] , buffer[0], buffer[1]);
 			int receivedIndex = buffer[2];
 			fracElems[receivedIndex][0] = buffer[0]; // update element x position in consolidated array
 			fracElems[receivedIndex][1] = buffer[1]; // update element y position in consolidated array
-			printf("0 received %d(%d): %d = %d, %d \n", ((i%(mpisize-1))+1), (i+1), (mpthreads - 1 + i) , buffer[0], buffer[1]);
 		}
 		auxFirst = 1;
 		maxFracElems = mpthreads; // update max threads for next level control
