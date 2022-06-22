@@ -75,7 +75,7 @@ int main(int argc, char *argv[])
 			}
 			MPI_Recv(buffer, 3, MPI_INT, ((i%(mpisize-1))+1), (i+1), MPI_COMM_WORLD, MPI_STATUS_IGNORE); // receive calculated element position
 			printf("0 received %d(%d): %d = %d, %d \n", ((i%(mpisize-1))+1), (i+1), buffer[2] , buffer[0], buffer[1]);
-			int receivedIndex = buffer[2];
+			int receivedIndex = mpthreads - 1 + buffer[2];
 			fracElems[receivedIndex][0] = buffer[0]; // update element x position in consolidated array
 			fracElems[receivedIndex][1] = buffer[1]; // update element y position in consolidated array
 		}
