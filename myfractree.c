@@ -5,7 +5,7 @@
 #include <omp.h>
 #include <mpi.h>
 
-#define FRACLEVELS 2 // Define here the number of levels the fractal tree will have
+#define FRACLEVELS 1 // Define here the number of levels the fractal tree will have
 
 // defined local exp power function
 int mypow(int base, int exp)
@@ -130,6 +130,10 @@ int main(int argc, char *argv[])
 		while(currFracLevel <= FRACLEVELS)
 		{
 			int displacementX = (FRACLEVELS-currFracLevel)*4; // to add or subtract from parent x position to calculate the x position for this level elements
+			if(displacementX == 0)
+			{
+				displacementX = 2;
+			}
 			fracLevelElems = mypow(2,currFracLevel-1); // calculate the number of elements in the current level of the fractal
 			int mpthreads = (fracLevelElems/(mpisize-1)); // contains the number of elements in the current level of the fractal this MPI will treat
 			if(mpirank < (fracLevelElems%(mpisize-1))+1) // may need to add one more if this MPI is treatment some of the remainder
