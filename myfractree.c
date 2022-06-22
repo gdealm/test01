@@ -150,7 +150,7 @@ int main(int argc, char *argv[])
 				//check if new to receive or reuse from previous calculation in this while
 				if(i >= maxFracElems)
 				{
-					int buffer[3]; // create a buffer to receive parent x,y positions
+					int buffer[4]; // create a buffer to receive parent x,y positions
 					printf("%d to receive from 0 - %d\n", mpirank , mpirank+(i*(mpisize-1)));
 					MPI_Recv(buffer, 4, MPI_INT, 0, mpirank+(i*(mpisize-1)), MPI_COMM_WORLD, MPI_STATUS_IGNORE); // receive parent x,y positions
 					localFracElems[i][0] = buffer[1] + displacementX;
