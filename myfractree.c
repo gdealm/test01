@@ -51,9 +51,14 @@ int main(int argc, char *argv[])
 	// starts calculating levels from level 2 to the last one defined
 	while(currFracLevel <= FRACLEVELS)
 	{
-		int mpthreads = mypow(2,currFracLevel-1); // number of threads for the current level is the number of elements in the level / 2
+		int currLevelElems = mypow(2,currFracLevel-1); // number of threads for the current level is the number of elements in the level / 2
+		int mpthreads = 1;
+		if(provided == 3)
+		{
+			mpthreads = currLevelElems;
+		}
 		#pragma omp parallel for num_threads(mpthreads)
-		for(int i=0; i < mpthreads; i++)
+		for(int i=0; i < currLevelElems; i++)
 		{
 			int buffer[3]; // create a buffer to receive calculated position
 			//int mprank = omp_get_thread_num(); // OpenMP rank of this thread // = i
@@ -75,12 +80,12 @@ int main(int argc, char *argv[])
 			}
 			MPI_Recv(buffer, 3, MPI_INT, ((i%(mpisize-1))+1), (i+1), MPI_COMM_WORLD, MPI_STATUS_IGNORE); // receive calculated element position
 			printf("0 received %d(%d): %d = %d, %d \n", ((i%(mpisize-1))+1), (i+1), buffer[2] , buffer[0], buffer[1]);
-			int receivedIndex = mpthreads - 1 + buffer[2];
+			int receivedIndex = currLevelElems - 1 + buffer[2];
 			fracElems[receivedIndex][0] = buffer[0]; // update element x position in consolidated array
 			fracElems[receivedIndex][1] = buffer[1]; // update element y position in consolidated array
 		}
 		auxFirst = 1;
-		maxFracElems = mpthreads; // update max threads for next level control
+		maxFracElems = currLevelElems; // update max threads for next level control
 		currFracLevel++; // increment frac level to the next one
 	}
 	//activate not activated yet, if any, to continue from receive to end
