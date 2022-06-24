@@ -140,15 +140,21 @@ int main(int argc, char *argv[])
 				displacementX = 2;
 			}
 			fracLevelElems = mypow(2,currFracLevel-1); // calculate the number of elements in the current level of the fractal
-			int mpthreads = (fracLevelElems/(mpisize-1)); // contains the number of elements in the current level of the fractal this MPI will treat
+			
+			int mpthreads = 1;
+			int currLevelElems = (fracLevelElems/(mpisize-1)); // contains the number of elements in the current level of the fractal this MPI will treat
 			if(mpirank < (fracLevelElems%(mpisize-1))+1) // may need to add one more if this MPI is treatment some of the remainder
 			{	
-				mpthreads++;
+				currLevelElems++;
+			}
+			if(provided == 3)
+			{
+				mpthreads = currLevelElems;
 			}
 			printf("Rank %d is starting %d threads. \n",mpirank,mpthreads);
 			//create threads
 			#pragma omp parallel for num_threads(mpthreads)
-			for(int i=0; i < mpthreads; i++)
+			for(int i=0; i < currLevelElems; i++)
 			{
 				//int mprank = omp_get_thread_num(); // OpenMP rank of this thread
 				//printf("thread %d of %d to send 0 - %d\n", omp_get_thread_num(), mpirank, mpirank+(i*(mpisize-1)));
@@ -189,7 +195,7 @@ int main(int argc, char *argv[])
 				}
 				//printf("thread %d of %d sent (%d,%d)\n", omp_get_thread_num(), mpirank, localFracElems[i][0], localFracElems[i][1]);
 			}
-			maxFracElems = mpthreads; // update max threads for next level control
+			maxFracElems = currLevelElems; // update max threads for next level control
 			currFracLevel++;
 		}
 	}
