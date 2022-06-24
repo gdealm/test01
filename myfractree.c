@@ -5,7 +5,7 @@
 #include <omp.h>
 #include <mpi.h>
 
-#define FRACLEVELS 2 // Define here the number of levels the fractal tree will have
+#define FRACLEVELS 4 // Define here the number of levels the fractal tree will have
 
 // defined local exp power function
 int mypow(int base, int exp)
