@@ -167,7 +167,6 @@ int main(int argc, char *argv[])
 					localFracElems[i][0] = buffer[1] + displacementX;
 					localFracElems[i][1] = buffer[2] + 1;
 					localFracElems[i][2] = buffer[3];
-					MPI_Send(localFracElems[i], 3, MPI_INT, 0, mpirank+(i*(mpisize-1)), MPI_COMM_WORLD);
 				}
 				else if (first)
 				{
@@ -176,13 +175,11 @@ int main(int argc, char *argv[])
 						localFracElems[i][0] -= displacementX;
 						localFracElems[i][1] += 1;
 						localFracElems[i][2] = 0;
-						MPI_Send(localFracElems[i], 3, MPI_INT, 0, mpirank+(i*(mpisize-1)), MPI_COMM_WORLD);
 					}
 					else
 					{
 						localFracElems[i][0] += displacementX;
 						localFracElems[i][1] += 1;
-						MPI_Send(localFracElems[i], 3, MPI_INT, 0, mpirank+(i*(mpisize-1)), MPI_COMM_WORLD);
 					}
 					first = false;
 				}
@@ -191,9 +188,19 @@ int main(int argc, char *argv[])
 					localFracElems[i][0] -= displacementX;
 					localFracElems[i][1] += 1;
 					localFracElems[i][2] *= 2;
+				}
+				if(provided == 3)
+				{
 					MPI_Send(localFracElems[i], 3, MPI_INT, 0, mpirank+(i*(mpisize-1)), MPI_COMM_WORLD);
 				}
 				//printf("thread %d of %d sent (%d,%d)\n", omp_get_thread_num(), mpirank, localFracElems[i][0], localFracElems[i][1]);
+			}
+			if(provided != 3)
+			{
+				for(int i=0; i < currLevelElems; i++)
+				{
+					MPI_Send(localFracElems[i], 3, MPI_INT, 0, mpirank+(i*(mpisize-1)), MPI_COMM_WORLD);
+				}
 			}
 			maxFracElems = currLevelElems; // update max threads for next level control
 			currFracLevel++;
