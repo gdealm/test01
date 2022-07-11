@@ -5,7 +5,7 @@
 #include <omp.h>
 #include <mpi.h>
 
-#define FRACLEVELS 4 // Define here the number of levels the fractal tree will have
+#define FRACLEVELS 8 // Define here the number of levels the fractal tree will have
 
 // defined local exp power function
 int mypow(int base, int exp)
@@ -34,6 +34,7 @@ int main(int argc, char *argv[])
   MPI_Comm_size(MPI_COMM_WORLD, &mpisize); // obtain mpisize //GGG if mpisize = 1, it will not work
 
   printf("Rank %d of %d is starting. \n",mpirank,mpisize);	
+  DateTime startTime = DateTime.Now;
 	
   // controller task
   if (mpirank == 0) {
@@ -209,7 +210,9 @@ int main(int argc, char *argv[])
 		}
 	}
   }
-  printf("Rank %d is ending. \n",mpirank);	
+  DateTime endTime = DateTime.Now;
+  TimeSpan ts = endTime - startTime;  
+  printf("Rank %d is ending. Time: %d\n",mpirank,ts.TotalMilliseconds);	
   MPI_Finalize();
   return 0;
 }
