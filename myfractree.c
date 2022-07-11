@@ -5,8 +5,11 @@
 #include <omp.h>
 #include <mpi.h>
 #include <sys/time.h>
+#include <simgrid/s4u.hpp>
 
 #define FRACLEVELS 8 // Define here the number of levels the fractal tree will have
+
+XBT_LOG_NEW_DEFAULT_CATEGORY(sample_simulator, "Messages specific for this simulator");
 
 // defined local exp power function
 int mypow(int base, int exp)
@@ -220,6 +223,7 @@ int main(int argc, char *argv[])
   //TimeSpan ts = endTime - startTime;  
   elapsedTime = (endTime.tv_sec - startTime.tv_sec) * 1000.0; 
   elapsedTime += (endTime.tv_usec - startTime.tv_usec) / 1000.0;
+  XBT_INFO("Total simulation time: %.3f", e.get_clock());
   printf("Rank %d is ending. Time: %f\n",mpirank,elapsedTime);	
   MPI_Finalize();
   return 0;
