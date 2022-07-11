@@ -4,6 +4,7 @@
 #include <stdbool.h>
 #include <omp.h>
 #include <mpi.h>
+#include <sys/time.h>
 
 #define FRACLEVELS 8 // Define here the number of levels the fractal tree will have
 
@@ -20,6 +21,9 @@ int mypow(int base, int exp)
 
 int main(int argc, char *argv[])
 {
+  struct timeval startTime, endTime;
+  double elapsedTime;
+	
   int mpisize; // number of MPI processing machines
   int mpirank; // MPI rank of this machine
 	
@@ -34,7 +38,8 @@ int main(int argc, char *argv[])
   MPI_Comm_size(MPI_COMM_WORLD, &mpisize); // obtain mpisize //GGG if mpisize = 1, it will not work
 
   printf("Rank %d of %d is starting. \n",mpirank,mpisize);	
-  DateTime startTime = DateTime.Now;
+  //DateTime startTime = DateTime.Now;
+  gettimeofday(&startTime, NULL);
 	
   // controller task
   if (mpirank == 0) {
@@ -210,9 +215,12 @@ int main(int argc, char *argv[])
 		}
 	}
   }
-  DateTime endTime = DateTime.Now;
-  TimeSpan ts = endTime - startTime;  
-  printf("Rank %d is ending. Time: %d\n",mpirank,ts.TotalMilliseconds);	
+  //DateTime endTime = DateTime.Now;
+  gettimeofday(&endTime, NULL);
+  //TimeSpan ts = endTime - startTime;  
+  elapsedTime = (endTime.tv_sec - startTime.tv_sec) * 1000.0; 
+  elapsedTime += (endTime.tv_usec - startTime.tv_usec) / 1000.0;
+  printf("Rank %d is ending. Time: %f\n",mpirank,elapsedTime);	
   MPI_Finalize();
   return 0;
 }
